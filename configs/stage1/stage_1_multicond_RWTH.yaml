@@ -22,11 +22,11 @@ grad:
   text_encoder: False
   condition_encoder: True
 
-gradient_checkpointing: False
+gradient_checkpointing: True
 
 solver:
   max_train_steps: 30000
-  gradient_accumulation_steps: 1
+  gradient_accumulation_steps: 16
   max_grad_norm: 1.0
   optimizer:
     use_8bit_adam: False
@@ -63,8 +63,8 @@ dataset:
   both_mask_ratio: 0
 
 dataloader:
-  batch_size: 32
-  num_workers: 8
+  batch_size: 4
+  num_workers: 4
 
 noise_scheduler_kwargs:
   num_train_timesteps: 1000
