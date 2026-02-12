@@ -93,12 +93,20 @@ def parse_config():
     )
     args = parser.parse_args()
 
+    # --- ADD THIS BLOCK HERE ---
+    # Register a resolver so OmegaConf can interpret ${oc.env:VAR_NAME} 
+    # This maps the YAML placeholders to your os.environ settings in Colab
+    if not OmegaConf.has_resolver("oc.env"):
+        OmegaConf.register_new_resolver("oc.env", lambda key: os.getenv(key))
+    # ---------------------------
+
     # Load the configuration file
     cfg = OmegaConf.load(args.config)
     cfg.exp_name = pathlib.Path(args.config).stem
 
     # Update cfg with values from args
-    cfg_dict = OmegaConf.to_container(cfg, resolve=True)
+    # resolve=True ensures that all ${oc.env:...} placeholders are replaced with actual paths
+    cfg_dict = OmegaConf.to_container(cfg, resolve=True) 
     args_dict = vars(args)
     merged_dict = {**cfg_dict, **args_dict}
 
@@ -106,7 +114,6 @@ def parse_config():
     merged_cfg = OmegaConf.create(merged_dict)
 
     return merged_cfg
-
 
 def load_modules(cfg, device, weight_dtype):
     modules_cfg = cfg.modules
