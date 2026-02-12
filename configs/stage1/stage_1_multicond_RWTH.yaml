@@ -3,12 +3,12 @@ weight_dtype: fp16
 stage_init: True
 
 modules:
-  vae: "./pretrain_models/sd-vae-ft-mse"
-  unet_2d: ./pretrain_models/stable-diffusion-v1-5/unet
-  scheduler: "./pretrain_models/stable-diffusion-v1-5/scheduler/"
-  apperance_encoder: ./pretrain_models/stable-diffusion-v1-5/unet
+  vae: "${oc.env:VAE_PATH}"
+  unet_2d: "${oc.env:UNET_2D_PATH}"
+  scheduler: "${oc.env:SCHEDULER_PATH}"
+  apperance_encoder: "${oc.env:UNET_2D_PATH}" # Initialized from base UNet
   condition_encoder: 
-  empty_text_emb: "./pretrain_models/empty_text_emb.pt"
+  empty_text_emb: "${oc.env:EMPTY_TEXT_EMB_PATH}"
   unet:
   unet_additional_kwargs:
     unet_use_cross_frame_attention: false
@@ -44,13 +44,13 @@ dataset:
   frame_scale: [ 1.0, 1.0 ]
   frame_ratio: [ 0.9, 1.0 ]
   roots:
-    - "/deepo_data/signvipworkspace/datasets/RWTH-T"
+    - "${oc.env:DATASET_ROOT}"
   sk_roots:
-    - "/deepo_data/signvipworkspace/datasets/RWTH-TSK"
+    - "${oc.env:DATASET_ROOT}"
   hamer_roots:
-    - "/deepo_data/signvipworkspace/datasets/RWTH-TSmplerx"
+    - "${oc.env:DATASET_ROOT}"
   meta_paths:
-    - "/deepo_data/signvipworkspace/datasets/RWTH-T/train_processed_videos.json"
+    - "${oc.env:TRAIN_META}"
   sample_rate: 2
   num_frames: 4
   ref_margin: 5
@@ -90,7 +90,7 @@ max_sin_pe_len: 1000
 
 validation_data:
   meta_paths:
-    - "/deepo_data/signvipworkspace/datasets/RWTH-T/dev_processed_videos.json"
+    - "${oc.env:VAL_META}"
   prompt: ""
   num_inference_steps: 20
   guidance_scale: 3.5
